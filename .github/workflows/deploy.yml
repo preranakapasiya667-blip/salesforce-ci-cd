@@ -26,14 +26,16 @@ jobs:
           wc -c auth.txt
           head -c 20 auth.txt
 
-      - name: Login to Org
-        run: |
-          sf org login sfdx-url --sfdx-url-file auth.txt
-
+     - name: Login to Org
+          run: sf org login sfdx-url --sfdx-url-file auth.txt --alias targetOrg
+          
       - name: Display Org
-        run: |
+          run: | 
           sf org list
 
-      - name: Deploy to Salesforce
-        run: |
-          sf project deploy start --source-dir force-app
+     - name: Deploy to Salesforce
+          run: sf project deploy start --source-dir force-app --target-org targetOrg
+
+      
+
+   
