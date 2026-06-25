@@ -1,0 +1,24 @@
+name: Manual Salesforce Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Salesforce CLI
+        run: npm install @salesforce/cli --global
+
+      - name: Authenticate to Salesforce
+        run: echo "${{ secrets.SF_AUTH_URL }}" > auth.txt
+
+      - name: Login to Org
+        run: sf org login sfdx-url --sfdx-url-file auth.txt
+
+      - name: Deploy to Salesforce
+        run: sf project deploy start --source-dir force-app
