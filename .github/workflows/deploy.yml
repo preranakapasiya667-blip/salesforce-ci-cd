@@ -13,27 +13,21 @@ jobs:
 
       - name: Install Salesforce CLI
         run: |
-          npm install -g @salesforce/cli
-          sf version
+          npm install -g sfdx-cli
+          sfdx --version
 
       - name: Create Auth File
         run: |
           echo "${{ secrets.SF_AUTH_URL }}" > auth.txt
 
-      - name: Verify Auth File
+      - name: Authenticate Org
         run: |
-          ls -l
-          wc -c auth.txt
-          head -c 20 auth.txt
+          sfdx auth:sfdxurl:store -f auth.txt -a targetOrg
 
-      - name: Login to Org
+      - name: Verify Org
         run: |
-          sf org login sfdx-url --sfdx-url-file auth.txt --alias targetOrg
-
-      - name: Display Org
-        run: |
-          sf org display --target-org targetOrg
+          sfdx force:org:display -u targetOrg
 
       - name: Deploy to Salesforce
         run: |
-          sf project deploy start --source-dir force-app --target-org targetOrg
+          sfdx force:source:deploy -p force-app -u targetOrg
