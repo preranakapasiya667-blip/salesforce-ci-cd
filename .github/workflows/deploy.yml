@@ -9,16 +9,31 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Salesforce CLI
-        run: npm install @salesforce/cli --global
+        run: |
+          npm install -g @salesforce/cli
+          sf version
 
-      - name: Authenticate to Salesforce
-        run: echo "${{ secrets.SF_AUTH_URL }}" > auth.txt
+      - name: Create Auth File
+        run: |
+          echo "${{ secrets.SF_AUTH_URL }}" > auth.txt
+
+      - name: Verify Auth File
+        run: |
+          ls -l
+          wc -c auth.txt
+          head -c 20 auth.txt
 
       - name: Login to Org
-        run: sf org login sfdx-url --sfdx-url-file auth.txt
+        run: |
+          sf org login sfdx-url --sfdx-url-file auth.txt
+
+      - name: Display Org
+        run: |
+          sf org list
 
       - name: Deploy to Salesforce
-        run: sf project deploy start --source-dir force-app
+        run: |
+          sf project deploy start --source-dir force-app
